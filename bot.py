@@ -19,7 +19,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 # Variabili di configurazione
-TOKEN = "MTM1NDg0MTc3MDczMDcyMTQ3Mw.GKu0Pt.wndFvzLkdkPa_nlLPvLBh4NBxUaZU-01KzYA_I"
+TOKEN = "YOUR_TOKEN_HERE"
 PREFIX = "!"
 
 GUILD_ID = 1354841382916718744       # ID del Server
