@@ -22,13 +22,13 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 TOKEN = "YOUR_TOKEN_HERE"
 PREFIX = "!"
 
-GUILD_ID = 1354841382916718744       # ID del Server
-OWNER_ROLE_ID = 1354852422916243700    # ID del ruolo OWNER
-STAFF_ROLE_ID = 1355235876942250120    # ID del ruolo STAFF
-MUTED_ROLE_ID = 1354911951649767514    # ID del ruolo Muted
+GUILD_ID = 0000000000000000000       # ID del Server
+OWNER_ROLE_ID = 0000000000000000000    # ID del ruolo OWNER
+STAFF_ROLE_ID = 0000000000000000000    # ID del ruolo STAFF
+MUTED_ROLE_ID = 0000000000000000000    # ID del ruolo Muted
 
-TICKET_CATEGORY_ID = 1355241599357030610      # ID della categoria dei ticket aperti
-TICKET_CLOSE_CATEGORY_ID = 1359914726909280321  # ID della categoria dei ticket chiusi
+TICKET_CATEGORY_ID = 0000000000000000000      # ID della categoria dei ticket aperti
+TICKET_CLOSE_CATEGORY_ID = 0000000000000000000  # ID della categoria dei ticket chiusi
 
 # Dizionario dei comandi con descrizione
 COMANDI = {
