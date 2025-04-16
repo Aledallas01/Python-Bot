@@ -8,29 +8,37 @@ import time
 import asyncio
 import random
 
-# Inizializza colorama (per garantire il reset dei colori su ogni riga)
+
+
+#############################################
+# Inizializzazione di colorama per output colorato
+#############################################
 init(autoreset=True)
 
-# Configurazione degli intents
-intents = discord.Intents.default()
-intents.message_content = True
 
-# Creazione del bot
+
+#############################################
+# Configurazione degli Intents e creazione del bot
+#############################################
+intents = discord.Intents.default()
+intents.message_content = True  # Abilita l’accesso al contenuto dei messaggi
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-# Variabili di configurazione
-TOKEN = "YOUR_TOKEN_HERE"
+
+
+#############################################
+# Variabili di configurazione globali
+#############################################
+TOKEN = "IL_TUO_TOKEN_QUI"
 PREFIX = "!"
+GUILD_ID = 1354841382916718744       # ID del Server
+OWNER_ROLE_ID = 1354852422916243700    # ID del ruolo OWNER
+STAFF_ROLE_ID = 1355235876942250120    # ID del ruolo STAFF
+MUTED_ROLE_ID = 1354911951649767514    # ID del ruolo Muted
+TICKET_CATEGORY_ID = 1355241599357030610      # ID della categoria dei ticket aperti
+TICKET_CLOSE_CATEGORY_ID = 1359914726909280321  # ID della categoria dei ticket chiusi
 
-GUILD_ID = 0000000000000000000       # ID del Server
-OWNER_ROLE_ID = 0000000000000000000    # ID del ruolo OWNER
-STAFF_ROLE_ID = 0000000000000000000    # ID del ruolo STAFF
-MUTED_ROLE_ID = 0000000000000000000    # ID del ruolo Muted
-
-TICKET_CATEGORY_ID = 0000000000000000000      # ID della categoria dei ticket aperti
-TICKET_CLOSE_CATEGORY_ID = 0000000000000000000  # ID della categoria dei ticket chiusi
-
-# Dizionario dei comandi con descrizione
+# Dizionario dei comandi con descrizioni per il log
 COMANDI = {
     "ciao": "Comando per salutare",
     "arrivederci": "Comando per salutare",
@@ -59,7 +67,11 @@ COMANDI = {
     "ticket": "Comando per aprire un ticket",
 }
 
-# Logo del bot (raw string per evitare problemi con i caratteri di escape)
+
+
+#############################################
+# Logo e Schermata Iniziale del Bot
+#############################################
 logo = r"""\n
  ____           __    __                             ____    ____    _____            
 /\  _`\        /\ \__/\ \                           /\  _`\ /\  _`\ /\  __`\          
@@ -72,27 +84,31 @@ logo = r"""\n
              \/__/                                                                    
 """
 
-# Funzione per stampare la schermata iniziale nel terminale
 def start_screen():
+    """Stampa la schermata iniziale nel terminale."""
     print(Fore.YELLOW + logo)
-    version = "1.0.0"  # Versione del bot
+    version = "1.0.0"  # Versione del Bot
     header_text = f"v{version} - Bot di Discord"
     space_amount = (84 - len(header_text)) // 2
     print(Fore.CYAN + " " * space_amount + header_text)
     print(Fore.CYAN + "=" * 84)
     print(Fore.GREEN + "Bot avviato. Attendere...")
-    time.sleep(1)  # Pausa di 1 secondo per miglior effetto visivo
+    time.sleep(1)  # Pausa per effetto visivo
 
-# Funzione per caricare manualmente i plugin dalla cartella "Plugins"
+
+
+#############################################
+# Caricamento dei Plugin
+#############################################
 def load_all_plugins(bot, folder="Plugins"):
-    # Calcola il percorso assoluto della cartella "Plugins" rispetto al file corrente
+    """Carica tutti i plugin dalla cartella specificata, saltando quelli non completi."""
     folder_path = os.path.join(os.path.dirname(__file__), folder)
     print(Fore.CYAN + "Caricamento dei plugin dalla cartella:", folder_path)
     for filename in os.listdir(folder_path):
         if filename.endswith(".py"):
-            # Salta i plugin non ancora completi (economy ed xp)
-            if filename[:-3].lower() in ["economy", "xp"]:
-                print(Fore.YELLOW + f"{filename[:-3].capitalize()} non caricato (non completo).")
+            # Salta i plugin non completi (es. 'economy')
+            if filename[:-3].lower() in ["economy"]:
+                print(Fore.YELLOW + f"{filename[:-3].capitalize()} da completare.")
                 continue
             plugin_name = filename[:-3]
             filepath = os.path.join(folder_path, filename)
@@ -108,28 +124,22 @@ def load_all_plugins(bot, folder="Plugins"):
             except Exception as e:
                 print(Fore.RED + f"Errore nel caricamento di {plugin_name}: {e}")
 
-# Importa importlib.util necessario per il caricamento manuale dei plugin
-import importlib.util
 
-# Evento per il log dei comandi eseguiti
+
+#############################################
+# Evento: Log dei comandi eseguiti
+#############################################
 @bot.event
 async def on_command(ctx):
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     user_str = f"{Fore.GREEN}{ctx.author}{Style.RESET_ALL}"
-
-    # Mappatura dei comandi relativi ai ticket e delle azioni specifiche
-    ticket_action_map = {
-         "ticket": "APERTO",
-    }
-    
     command_name = ctx.command.name.lower()
-    
-    # Se il comando riguarda i ticket, usa un formato speciale:
-    if command_name in ticket_action_map:
-        action = ticket_action_map[command_name]
-        ticket_name = ctx.channel.name if ctx.channel.name.lower().startswith("ticket-") else "Non specificato"
-        log_message = ()
 
+    # Controllo speciale per il comando ticket (puoi aggiungere altre eccezioni se necessario)
+    if command_name == "ticket":
+        # In caso di ticket, personalizza il log con eventuali informazioni sul canale
+        ticket_name = ctx.channel.name if ctx.channel.name.lower().startswith("ticket-") else "Non specificato"
+        log_message = f"{Fore.BLUE}{current_time}{Style.RESET_ALL} | {user_str}: {Fore.YELLOW}{ctx.command}{Style.RESET_ALL} - Ticket: {Fore.MAGENTA}{ticket_name}{Style.RESET_ALL}"
     else:
         descrizione = COMANDI.get(command_name, "Descrizione non disponibile")
         log_message = (
@@ -138,14 +148,20 @@ async def on_command(ctx):
         )
     print(log_message)
 
-# Evento on_ready: carica i plugin e mostra informazioni di login
+
+
+#############################################
+# Evento: on_ready - Avvio del bot e caricamento dei plugin
+#############################################
 @bot.event
 async def on_ready():
-    load_all_plugins(bot)  # Chiamata sincrona, perché load_all_plugins è definita in modo sincrono
+    load_all_plugins(bot)
     print(Fore.GREEN + f'Logged in as {bot.user} (ID: {bot.user.id})')
 
-# Mostra la schermata iniziale
-start_screen()
 
-# Avvio del bot
+
+#############################################
+# Main: Mostra la schermata iniziale e avvia il bot
+#############################################
+start_screen()
 bot.run(TOKEN)
