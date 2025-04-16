@@ -1,41 +1,68 @@
 import discord
 from discord.ext import commands
 
+#############################################
+# Configurazione del Bot e degli Intent
+#############################################
+# Se il bot viene configurato nel file principale, questo plugin funziona in maniera autonoma.
 intents = discord.Intents.default()
-intents.message_content = True
-
+intents.message_content = True  # Necessario per leggere il contenuto dei messaggi
 bot = commands.Bot(command_prefix='!', intents=intents)
+NAME = "Dallas Bot"  # Nome del bot
 
 
-# ---------------------------------------
+
+#############################################
+# Helper: Creazione di Embed Standardizzati
+#############################################
+def create_embed(title: str, description: str, color: int = 0x7289da):
+    embed = discord.Embed(title=title, description=description, color=color)
+    embed.set_footer(text=f"Plugin Base - Powered by {NAME}")
+    return embed
+
+
+
+#############################################
 # Comandi per la matematica
-# ---------------------------------------
+#############################################
 
 @commands.command()
 async def add(ctx, left: int, right: int):
-    """Adds two numbers together."""
-    await ctx.send(left + right)
-
+    """Somma due numeri e visualizza il risultato."""
+    result = left + right
+    embed = create_embed("Addizione", f"{left} + {right} = **{result}**", color=0x00ff00)
+    await ctx.send(embed=embed)
 
 @commands.command()
 async def sub(ctx, left: int, right: int):
-    """Subtracts two numbers."""
-    await ctx.send(left - right)
-
+    """Sottrae due numeri e visualizza il risultato."""
+    result = left - right
+    embed = create_embed("Sottrazione", f"{left} - {right} = **{result}**", color=0xff9900)
+    await ctx.send(embed=embed)
 
 @commands.command()
 async def mul(ctx, left: int, right: int):
-    """Multiplies two numbers."""
-    await ctx.send(left * right)
-
+    """Moltiplica due numeri e visualizza il risultato."""
+    result = left * right
+    embed = create_embed("Moltiplicazione", f"{left} * {right} = **{result}**", color=0x7289da)
+    await ctx.send(embed=embed)
 
 @commands.command()
 async def div(ctx, left: int, right: int):
-    """Divides two numbers."""
-    await ctx.send(left / right)
+    """Divide due numeri e visualizza il risultato."""
+    try:
+        # Protezione da divisione per zero
+        result = left / right
+        embed = create_embed("Divisione", f"{left} / {right} = **{result}**", color=0x00ccff)
+    except ZeroDivisionError:
+        embed = create_embed("Divisione", "Errore: divisione per zero non permessa!", color=0xff5555)
+    await ctx.send(embed=embed)
 
 
-# La funzione setup è necessaria per caricare correttamente il plugin
+
+#############################################
+# Setup del plugin Maths
+#############################################
 def setup(bot):
     bot.add_command(add)
     bot.add_command(sub)
